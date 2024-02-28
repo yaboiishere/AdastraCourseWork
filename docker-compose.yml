@@ -6,8 +6,6 @@ services:
     build: .
     ports:
       - "8000:8000"
-    volumes:
-        - .:/code
     depends_on:
         - postgres
         - spark-worker
@@ -16,14 +14,14 @@ services:
     image: postgres:16-alpine
     env_file:
       - .env
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
     environment:
         - POSTGRES_DB=$PG_DATABASE
         - POSTGRES_USER=$PG_USER
         - POSTGRES_PASSWORD=$PG_PASSWORD
     ports:
         - "5432:5432"
-#    volumes:
-#        - postgres_data:/var/lib/postgresql/data
 
   spark-driver:
      image: bitnami/spark:3.4.2
@@ -32,13 +30,16 @@ services:
       - "9090:8080"
       - "7077:7077"
   spark-worker:
-     image: bitnami/spark:3.4.2
-     command: bin/spark-class org.apache.spark.deploy.worker.Worker $SPARK_URL
-     deploy:
+    build:
+     context: .
+     dockerfile: executor.Dockerfile
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker $SPARK_URL
+    user: root
+    deploy:
           replicas: 2
-     depends_on:
+    depends_on:
        - spark-driver
-     environment:
+    environment:
        SPARK_MODE: worker
        SPARK_WORKER_CORES: 2
        SPARK_WORKER_MEMORY: 2g

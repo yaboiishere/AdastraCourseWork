@@ -7,5 +7,5 @@ pandas~=2.2.1
 uvicorn~=0.27.1
 pydantic-settings~=2.2.1
 mongo-spark-connector~=10.0.3
-psycopg2~=2.9.9
+psycopg2-binary~=2.9.9
 venv-pack~=0.2.0

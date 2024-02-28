@@ -44,8 +44,6 @@ class Config:
     def __init__(self, s: Settings):
         self.spark_session = (SparkSession.builder.appName(s.app_name)
                               .master(s.spark_url)
-                              .config("spark.archives", "venv.tar.gz#env")
-                              .config("spark.pyspark.python", "env/bin/python")
                               .config("spark.jars.packages",
                                       "org.mongodb.spark:mongo-spark-connector:10.0.3,org.postgresql:postgresql:42.2.23"
                                       )

@@ -18,6 +18,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY . /code/app
+COPY . /code
 
 CMD python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
