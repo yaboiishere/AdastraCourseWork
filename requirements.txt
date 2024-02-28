@@ -1,0 +1,11 @@
+fastapi~=0.110.0
+pyspark~=3.4.2
+pymongo~=4.6.2
+pydantic~=2.6.2
+SQLAlchemy~=2.0.27
+pandas~=2.2.1
+uvicorn~=0.27.1
+pydantic-settings~=2.2.1
+mongo-spark-connector~=10.0.3
+psycopg2~=2.9.9
+venv-pack~=0.2.0

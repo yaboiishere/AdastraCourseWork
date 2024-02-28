@@ -1,0 +1,56 @@
+version: "3"
+services:
+  web:
+    env_file:
+      - .env
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+        - .:/code
+    depends_on:
+        - postgres
+        - spark-worker
+        - mongodb
+  postgres:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    environment:
+        - POSTGRES_DB=$PG_DATABASE
+        - POSTGRES_USER=$PG_USER
+        - POSTGRES_PASSWORD=$PG_PASSWORD
+    ports:
+        - "5432:5432"
+#    volumes:
+#        - postgres_data:/var/lib/postgresql/data
+
+  spark-driver:
+     image: bitnami/spark:3.4.2
+     command: "bin/spark-class org.apache.spark.deploy.master.Master"
+     ports:
+      - "9090:8080"
+      - "7077:7077"
+  spark-worker:
+     image: bitnami/spark:3.4.2
+     command: bin/spark-class org.apache.spark.deploy.worker.Worker $SPARK_URL
+     deploy:
+          replicas: 2
+     depends_on:
+       - spark-driver
+     environment:
+       SPARK_MODE: worker
+       SPARK_WORKER_CORES: 2
+       SPARK_WORKER_MEMORY: 2g
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASS
+
+volumes:
+    postgres_data:
